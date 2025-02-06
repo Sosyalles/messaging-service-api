@@ -1,20 +1,27 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/database';
 
-class Message extends Model {}
+export class Message extends Model {
+  public id!: number;
+  public senderId!: number;
+  public receiverId!: number;
+  public content!: string;
+  public isRead!: boolean;
+  public createdAt!: Date;
+}
 
 Message.init(
   {
     id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
+      primaryKey: true,
     },
-    sender_id: {
+    senderId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    receiver_id: {
+    receiverId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -22,19 +29,14 @@ Message.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    is_read: {
+    isRead: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
   },
   {
     sequelize,
-    modelName: 'Message',
     tableName: 'messages',
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
   }
-);
-
-module.exports = Message; 
+); 

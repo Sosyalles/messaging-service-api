@@ -1,2 +1,11 @@
-node_modules
-.cursorrules
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Other files to ignore
+node_modules/
+dist/
+coverage/
+.DS_Store 
+logs

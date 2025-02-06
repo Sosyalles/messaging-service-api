@@ -1,0 +1,159 @@
+Generate a complete Node.js project structure for a "Messaging Service API" using Express.js and PostgreSQL with an ORM (e.g., Sequelize). Follow best practices and implement the following functionalities, ensuring strong type safety using TypeScript.
+
+### **API Functionalities**
+
+1. **Send Message** (`POST /api/messages/send`):
+   - Sends a message from one user to another.
+   - Requires `senderId`, `receiverId`, and `content` in the request body.
+
+2. **List Messages in a Conversation** (`GET /api/messages/conversation/:receiverId`):
+   - Retrieves all messages exchanged between the authenticated user and the specified `receiverId`.
+
+3. **List All Conversations** (`GET /api/messages/conversations`):
+   - Retrieves a list of all conversations for the authenticated user. Each conversation includes the last message.
+
+4. **Delete Message** (`DELETE /api/messages/:messageId`):
+   - Deletes a message by its `messageId`. Only the sender or receiver can delete the message.
+
+5. **List Unread Messages** (`GET /api/messages/unread`):
+   - Retrieves all unread messages for the authenticated user.
+
+6. **Mark Message as Read** (`PATCH /api/messages/:messageId/read`):
+   - Marks a message as read by its `messageId`.
+
+### **Database Schema**
+
+#### 1. **Messages Table**
+```sql
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### 2. **Conversations Table** (Optional for managing conversations)
+```sql
+CREATE TABLE conversations (
+    id SERIAL PRIMARY KEY,
+    user_one_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_two_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    last_message_id INT REFERENCES messages(id) ON DELETE SET NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_one_id, user_two_id)
+);
+```
+
+### **Requirements**
+
+- Use **TypeScript** for type safety.
+- Use **Express.js** for REST API endpoints.
+- Use **PostgreSQL** as the database with Sequelize as the ORM.
+- Follow best practices for project structure.
+  - **Controller-Service-Repository Pattern**:
+    - **Controller:** Handles HTTP requests and responses.
+    - **Service:** Contains business logic.
+    - **Repository:** Interfaces with the database.
+- Maintain all reusable types and DTOs in a dedicated `types/` directory.
+- Include input validation for all endpoints using a validation library (e.g., Joi).
+- Implement JWT-based authentication middleware.
+- Include error handling for database, authentication, and validation issues.
+
+### **File Structure**
+
+1. **`src/`**
+    - `controllers/`: Contains API controllers.
+    - `services/`: Contains business logic.
+    - `repositories/`: Contains database interaction logic.
+    - `models/`: Sequelize models for database tables.
+    - `routes/`: API route definitions.
+    - `middlewares/`: Custom middleware (e.g., JWT authentication).
+    - `config/`: Configuration files (e.g., database connection, environment variables).
+    - `utils/`: Utility functions (e.g., token generation).
+    - `types/`: TypeScript types and DTOs.
+
+### **Code Examples**
+
+#### **1. Example Type Definitions: `types/message.ts`**
+```typescript
+export interface Message {
+    id?: number;
+    senderId: number;
+    receiverId: number;
+    content: string;
+    isRead?: boolean;
+    createdAt?: Date;
+}
+```
+
+#### **2. Example DTO Definitions: `types/dto.ts`**
+```typescript
+export interface SendMessageDTO {
+    senderId: number;
+    receiverId: number;
+    content: string;
+}
+```
+
+#### **3. Example Controller: `controllers/MessageController.ts`**
+```typescript
+import { Request, Response, NextFunction } from 'express';
+import MessageService from '../services/MessageService';
+import { SendMessageDTO } from '../types/dto';
+
+export const sendMessage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const messageData: SendMessageDTO = req.body;
+        const message = await MessageService.sendMessage(messageData);
+        res.status(201).json({ message });
+    } catch (error) {
+        next(error);
+    }
+};
+```
+
+#### **4. Example Service: `services/MessageService.ts`**
+```typescript
+import MessageRepository from '../repositories/MessageRepository';
+import { SendMessageDTO } from '../types/dto';
+import { Message } from '../types/message';
+
+export const sendMessage = async (messageData: SendMessageDTO): Promise<Message> => {
+    if (!messageData.senderId || !messageData.receiverId || !messageData.content) {
+        throw new Error('Invalid input');
+    }
+    return await MessageRepository.createMessage(messageData);
+};
+```
+
+#### **5. Example Repository: `repositories/MessageRepository.ts`**
+```typescript
+import { MessageModel } from '../models';
+import { SendMessageDTO } from '../types/dto';
+import { Message } from '../types/message';
+
+export const createMessage = async (messageData: SendMessageDTO): Promise<Message> => {
+    return await MessageModel.create(messageData);
+};
+```
+
+### **Environment Variables**
+- Configure `.env` file for sensitive information:
+  - `DATABASE_URL`: PostgreSQL connection string.
+  - `JWT_SECRET`: Secret key for JWT authentication.
+  - `PORT`: Application port.
+
+### **Output**
+1. A well-structured Node.js + TypeScript project for messaging service.
+2. Full implementation of RESTful APIs for messaging.
+3. Strong type safety using TypeScript interfaces and DTOs.
+4. Modular and scalable architecture with minimal dependencies.
+5. Example database schema and Sequelize models.
+6. JWT-based authentication middleware.
+7. Proper error handling and input validation.
+
+Generate project components and implement changes based on these guidelines.
+
