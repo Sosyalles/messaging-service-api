@@ -19,20 +19,12 @@ export const env = {
   USER_SERVICE_URL: process.env.USER_SERVICE_URL || 'http://localhost:8080',
   USER_SERVICE_API_KEY: process.env.USER_SERVICE_API_KEY!,
   
-  // Database
-  DB: {
-    HOST: process.env.DB_HOST!,
-    PORT: Number(process.env.DB_PORT || 5432),
-    USER: process.env.DB_USER!,
-    PASSWORD: process.env.DB_PASSWORD!,
-    NAME: process.env.DB_NAME!,
-  },
+  // Message Queue
+  RABBITMQ_URL: process.env.RABBITMQ_URL || 'amqp://localhost:5672',
   
-  // JWT
-  JWT: {
-    SECRET: process.env.JWT_SECRET!,
-    EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
-  },
+  // Database
+  DATABASE_URL: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/messaging_db_dev',
+  DB_SSL: process.env.DB_SSL === 'true',
 
   // Utils
   isDevelopment: process.env.NODE_ENV === Environment.Development,
@@ -42,11 +34,6 @@ export const env = {
 
 // Validate required environment variables
 const requiredEnvVars = [
-  'DB_HOST',
-  'DB_USER',
-  'DB_PASSWORD',
-  'DB_NAME',
-  'JWT_SECRET',
   'USER_SERVICE_API_KEY'
 ] as const;
 
