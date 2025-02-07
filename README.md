@@ -5,7 +5,7 @@ Real-time mesajlaşma servisi API'si, TypeScript, Express.js, PostgreSQL, Socket
 ## 🚀 Özellikler
 
 - ✨ Real-time mesajlaşma
-- 🔐 JWT tabanlı kimlik doğrulama
+- 🔐 User Management Service ile merkezi kimlik doğrulama
 - 📝 Mesaj okuma/yazma durumu takibi
 - 🔄 Mesaj geçmişi ve sohbet yönetimi
 - 📦 RabbitMQ ile mesaj kuyruklama

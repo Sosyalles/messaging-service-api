@@ -1,13 +1,5 @@
 import { Sequelize } from 'sequelize';
-
-// Database configuration from environment variables
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432', 10),
-  database: process.env.DB_NAME || 'messaging_db',
-  username: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres'
-};
+import { env } from './env.config';
 
 // Connection pool configuration
 const poolConfig = {
@@ -17,13 +9,8 @@ const poolConfig = {
   idle: parseInt(process.env.DB_POOL_IDLE || '10000', 10)
 };
 
-export const sequelize = new Sequelize({
+export const sequelize = new Sequelize(env.DATABASE_URL, {
   dialect: 'postgres',
-  host: dbConfig.host,
-  port: dbConfig.port,
-  database: dbConfig.database,
-  username: dbConfig.username,
-  password: dbConfig.password,
   logging: process.env.NODE_ENV !== 'production',
   pool: poolConfig,
   define: {
@@ -31,24 +18,10 @@ export const sequelize = new Sequelize({
     underscored: true
   },
   dialectOptions: {
-    ssl: process.env.DB_SSL === 'true' ? {
+    ssl: env.DB_SSL ? {
       require: true,
       rejectUnauthorized: false
-    } : false,
-    statement_timeout: 30000, // 30 seconds
-    idle_in_transaction_session_timeout: 30000, // 30 seconds
-    keepAlive: true
-  },
-  retry: {
-    max: 3,
-    match: [
-      /SequelizeConnectionError/,
-      /SequelizeConnectionRefusedError/,
-      /SequelizeHostNotFoundError/,
-      /SequelizeHostNotReachableError/,
-      /SequelizeInvalidConnectionError/,
-      /SequelizeConnectionTimedOutError/
-    ]
+    } : false
   }
 });
 
