@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import axios, { isAxiosError } from 'axios';
 import { AuthVerifyResponse } from '../types/userService';
 import { createHash } from 'crypto';
+import { ExtendedError } from 'socket.io/dist/namespace';
 
 // Event types for better type safety and performance
 type SocketEventType = 'private-message' | 'typing-status' | 'notification' | 'user-status';
@@ -48,58 +49,58 @@ class SocketService {
           throw new Error('Rate limit exceeded');
         }
 
-        const token = socket.handshake.auth.token;
-        if (!token) throw new Error('Authentication token required');
+        const authHeader = socket.handshake.auth.authorization;
+        if (!authHeader) throw new Error('Authorization header required');
 
-        // Check for blocked tokens
-        const tokenHash = this.hashToken(token);
-        if (this.blockedTokens.has(tokenHash)) {
-          throw new Error('Token is blocked');
-        }
+        try {
+          const response = await axios.get<AuthVerifyResponse>(
+            `${process.env.USER_SERVICE_URL}/auth/verify`,
+            { 
+              headers: { 
+                Authorization: authHeader,
+                'X-Client-IP': socket.handshake.address,
+                'X-Request-ID': socket.id,
+                'X-Client-Type': 'websocket'
+              },
+              timeout: 5000
+            }
+          );
 
-        const response = await axios.get<AuthVerifyResponse>(
-          `${process.env.USER_SERVICE_URL}/auth/verify`,
-          { 
-            headers: { 
-              Authorization: `Bearer ${token}`,
-              'X-Client-IP': socket.handshake.address,
-              'X-Request-ID': socket.id
-            },
-            timeout: 5000
+          if (!response.data?.data?.id) {
+            throw new Error('Invalid user data received');
           }
-        );
 
-        if (!response.data?.data?.id) {
-          throw new Error('Invalid user data received');
+          const userId = response.data.data.id;
+
+          // Check connection limit
+          const user = this.onlineUsers.get(userId);
+          if (user && user.connectionCount >= this.MAX_CONNECTIONS_PER_USER) {
+            throw new Error('Maximum connection limit reached');
+          }
+
+          socket.data.userId = userId;
+
+          // Set security headers
+          socket.emit('connection-secure', {
+            timestamp: Date.now(),
+            sessionId: socket.id
+          });
+
+          next();
+        } catch (error) {
+          if (isAxiosError(error)) {
+            if (error.response?.status === 401) {
+              return next(new Error('Invalid or expired authorization') as ExtendedError);
+            }
+            if (error.response?.status === 403) {
+              return next(new Error('Access denied') as ExtendedError);
+            }
+            return next(new Error('Authentication service unavailable') as ExtendedError);
+          }
+          next(error as ExtendedError);
         }
-
-        const userId = response.data.data.id;
-
-        // Check connection limit
-        const user = this.onlineUsers.get(userId);
-        if (user && user.connectionCount >= this.MAX_CONNECTIONS_PER_USER) {
-          throw new Error('Maximum connection limit reached');
-        }
-
-        socket.data.userId = userId;
-        socket.data.tokenHash = tokenHash;
-
-        // Set security headers
-        socket.emit('connection-secure', {
-          timestamp: Date.now(),
-          sessionId: socket.id
-        });
-
-        next();
       } catch (error) {
-        if (isAxiosError(error)) {
-          if (error.response?.status === 401) {
-            this.blockToken(socket.data.tokenHash);
-            return next(new Error('Invalid or expired token'));
-          }
-          if (error.response?.status === 403) return next(new Error('Access denied'));
-        }
-        next(error instanceof Error ? error : new Error('Authentication failed'));
+        next(error instanceof Error ? error as ExtendedError : new Error('Authentication failed') as ExtendedError);
       }
     });
   }
