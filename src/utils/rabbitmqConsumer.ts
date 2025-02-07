@@ -1,5 +1,5 @@
 import { Channel, ConsumeMessage } from 'amqplib';
-import { rabbitMQService } from '../config/rabbitmq.config';
+import { rabbitMQService } from '../services/RabbitMQService';
 
 export class MessageQueueConsumer {
   private static instance: MessageQueueConsumer;
@@ -18,6 +18,9 @@ export class MessageQueueConsumer {
   private async getChannel(): Promise<Channel> {
     if (!this.channel) {
       this.channel = await rabbitMQService.getChannel();
+    }
+    if (!this.channel) {
+      throw new Error('Failed to create RabbitMQ channel');
     }
     return this.channel;
   }
