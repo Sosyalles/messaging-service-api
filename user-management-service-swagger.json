@@ -1,761 +1,910 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "User Management API",
-        "description": "Kullanıcı yönetimi ve takip sistemi API'si. Public ve Internal endpointleri içerir.",
-        "contact": {
-            "name": "API Support",
-            "email": "support@usermanagement.com"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0"
+      "title": "User Management API",
+      "description": "User Management System API Documentation",
+      "contact": {
+        "name": "API Support",
+        "email": "support@usermanagement.com"
+      },
+      "license": {
+        "name": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      },
+      "version": "v1.0"
     },
     "servers": [
-        {
-            "url": "http://localhost:8080",
-            "description": "Generated server url"
-        }
+      {
+        "url": "http://localhost:8080",
+        "description": "Generated server url"
+      }
     ],
     "security": [
-        {
-            "bearer-jwt": []
-        },
-        {
-            "api-key": []
-        }
+      {
+        "bearer-jwt": []
+      },
+      {
+        "api-key": []
+      }
     ],
     "tags": [
-        {
-            "name": "Internal User Operations",
-            "description": "Internal API endpoints for user management"
-        },
-        {
-            "name": "Internal User Operations",
-            "description": "Sadece iç sistemler tarafından kullanılabilen kullanıcı operasyonları"
-        },
-        {
-            "name": "Follower Management",
-            "description": "Takipçi yönetimi operasyonları"
-        },
-        {
-            "name": "Authentication",
-            "description": "Kimlik doğrulama ve yetkilendirme işlemleri"
-        },
-        {
-            "name": "Public User Operations",
-            "description": "Dış sistemlere açık olan kullanıcı operasyonları"
-        },
-        {
-            "name": "User Management",
-            "description": "Kullanıcı yönetimi operasyonları"
-        }
+      {
+        "name": "Internal User Operations",
+        "description": "Internal API endpoints for user management"
+      },
+      {
+        "name": "Internal User Operations",
+        "description": "Sadece iç sistemler tarafından kullanılabilen kullanıcı operasyonları"
+      },
+      {
+        "name": "Follower Management",
+        "description": "Takipçi yönetimi operasyonları"
+      },
+      {
+        "name": "Internal Authentication",
+        "description": "İç servisler arası kimlik doğrulama işlemleri"
+      },
+      {
+        "name": "Authentication",
+        "description": "Kimlik doğrulama ve yetkilendirme işlemleri"
+      },
+      {
+        "name": "Public User Operations",
+        "description": "Dış sistemlere açık olan kullanıcı operasyonları"
+      },
+      {
+        "name": "User Management",
+        "description": "Kullanıcı yönetimi operasyonları"
+      }
     ],
     "paths": {
-        "/api/users/{id}": {
-            "get": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "getUserById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    }
+      "/api/users/{id}": {
+        "get": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "getUserById",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
                 }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "updateUser",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
             },
-            "put": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "updateUser",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    }
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
                 }
-            },
-            "delete": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "deleteUser",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
+              }
             }
+          }
         },
-        "/api/users/{id}/password": {
-            "put": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "changePassword",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "oldPassword",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "newPassword",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
+        "delete": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "deleteUser",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
             }
-        },
-        "/api/users/{id}/follow/{targetId}": {
-            "post": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "followUser",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "targetId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
             }
-        },
-        "/api/users/register": {
-            "post": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "createUser",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserCreateRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/{id}/following": {
-            "get": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "getUserFollowing",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/{id}/followers": {
-            "get": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "getUserFollowers",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/search": {
-            "get": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "searchUsers",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/list": {
-            "get": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "getAllUsers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/internal/users/{id}": {
-            "get": {
-                "tags": [
-                    "Internal User Operations"
-                ],
-                "summary": "Get user by ID",
-                "description": "Retrieves a specific user by their ID",
-                "operationId": "getUserById_1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to retrieve",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized - Invalid or missing API key",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "Successfully retrieved the user",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - API key does not have required permissions",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "User not found with the given ID",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api-key": []
-                    }
-                ]
-            }
-        },
-        "/api/internal/users/username/{username}": {
-            "get": {
-                "tags": [
-                    "Internal User Operations"
-                ],
-                "summary": "Get user by username",
-                "description": "Retrieves a specific user by their username",
-                "operationId": "getUserByUsername",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "Username of the user to retrieve",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized - Invalid or missing API key",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "Successfully retrieved the user",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "User not found with the given username",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - API key does not have required permissions",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api-key": []
-                    }
-                ]
-            }
-        },
-        "/api/internal/users/list": {
-            "get": {
-                "tags": [
-                    "Internal User Operations"
-                ],
-                "summary": "Get all users",
-                "description": "Retrieves a list of all users in the system",
-                "operationId": "getAllUsers_1",
-                "responses": {
-                    "200": {
-                        "description": "Successfully retrieved all users",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - Invalid or missing API key",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - API key does not have required permissions",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api-key": []
-                    }
-                ]
-            }
-        },
-        "/api/internal/users/email/{email}": {
-            "get": {
-                "tags": [
-                    "Internal User Operations"
-                ],
-                "summary": "Get user by email",
-                "description": "Retrieves a specific user by their email address",
-                "operationId": "getUserByEmail",
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "path",
-                        "description": "Email address of the user to retrieve",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized - Invalid or missing API key",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "Successfully retrieved the user",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "User not found with the given email",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - API key does not have required permissions",
-                        "content": {
-                            "*/*": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "api-key": []
-                    }
-                ]
-            }
-        },
-        "/api/users/{id}/unfollow/{targetId}": {
-            "delete": {
-                "tags": [
-                    "user-controller"
-                ],
-                "operationId": "unfollowUser",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "targetId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
+          }
         }
+      },
+      "/api/users/{id}/password": {
+        "put": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "changePassword",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            {
+              "name": "oldPassword",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "newPassword",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          }
+        }
+      },
+      "/internal/auth/verify": {
+        "post": {
+          "tags": [
+            "Internal Authentication"
+          ],
+          "operationId": "verifyToken",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApiResponseUserVerificationResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/{id}/follow/{targetId}": {
+        "post": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "followUser",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            {
+              "name": "targetId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          }
+        }
+      },
+      "/api/users/register": {
+        "post": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "createUser",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreateRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApiResponseUserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/auth/login": {
+        "post": {
+          "tags": [
+            "auth-controller"
+          ],
+          "operationId": "login",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AuthResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/{id}/following": {
+        "get": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "getUserFollowing",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/{id}/followers": {
+        "get": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "getUserFollowers",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/search": {
+        "get": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "searchUsers",
+          "parameters": [
+            {
+              "name": "username",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "email",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/profile": {
+        "get": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "getCurrentUserProfile",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApiResponseUserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/users/list": {
+        "get": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "getAllUsers",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/internal/users/{id}": {
+        "get": {
+          "tags": [
+            "Internal User Operations"
+          ],
+          "summary": "Get user by ID",
+          "description": "Retrieves a specific user by their ID",
+          "operationId": "getUserById_1",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the user to retrieve",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorized - Invalid or missing API key",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "200": {
+              "description": "Successfully retrieved the user",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - API key does not have required permissions",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "User not found with the given ID",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "api-key": []
+            }
+          ]
+        }
+      },
+      "/api/internal/users/username/{username}": {
+        "get": {
+          "tags": [
+            "Internal User Operations"
+          ],
+          "summary": "Get user by username",
+          "description": "Retrieves a specific user by their username",
+          "operationId": "getUserByUsername",
+          "parameters": [
+            {
+              "name": "username",
+              "in": "path",
+              "description": "Username of the user to retrieve",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorized - Invalid or missing API key",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "200": {
+              "description": "Successfully retrieved the user",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "User not found with the given username",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - API key does not have required permissions",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "api-key": []
+            }
+          ]
+        }
+      },
+      "/api/internal/users/list": {
+        "get": {
+          "tags": [
+            "Internal User Operations"
+          ],
+          "summary": "Get all users",
+          "description": "Retrieves a list of all users in the system",
+          "operationId": "getAllUsers_1",
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved all users",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - Invalid or missing API key",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - API key does not have required permissions",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "api-key": []
+            }
+          ]
+        }
+      },
+      "/api/internal/users/email/{email}": {
+        "get": {
+          "tags": [
+            "Internal User Operations"
+          ],
+          "summary": "Get user by email",
+          "description": "Retrieves a specific user by their email address",
+          "operationId": "getUserByEmail",
+          "parameters": [
+            {
+              "name": "email",
+              "in": "path",
+              "description": "Email address of the user to retrieve",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorized - Invalid or missing API key",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "200": {
+              "description": "Successfully retrieved the user",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "User not found with the given email",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - API key does not have required permissions",
+              "content": {
+                "*/*": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "api-key": []
+            }
+          ]
+        }
+      },
+      "/api/users/{id}/unfollow/{targetId}": {
+        "delete": {
+          "tags": [
+            "user-controller"
+          ],
+          "operationId": "unfollowUser",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            {
+              "name": "targetId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          }
+        }
+      }
     },
     "components": {
-        "schemas": {
-            "UserDto": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "profilePicture": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "followersCount": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "followingCount": {
-                        "type": "integer",
-                        "format": "int32"
-                    }
-                }
+      "schemas": {
+        "UserDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
             },
-            "UserCreateRequest": {
-                "required": [
-                    "confirmPassword",
-                    "email",
-                    "password",
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "maxLength": 50,
-                        "minLength": 3,
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "maxLength": 2147483647,
-                        "minLength": 6,
-                        "type": "string"
-                    },
-                    "confirmPassword": {
-                        "type": "string"
-                    }
-                }
+            "username": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "profilePicture": {
+              "type": "string"
+            },
+            "bio": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "followersCount": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "followingCount": {
+              "type": "integer",
+              "format": "int32"
             }
+          }
         },
-        "securitySchemes": {
-            "bearer-jwt": {
-                "type": "http",
-                "description": "JWT Authorization header using the Bearer scheme.",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
+        "ApiResponseUserVerificationResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
             },
-            "api-key": {
-                "type": "apiKey",
-                "description": "API Key Authentication for internal services",
-                "name": "X-API-KEY",
-                "in": "header"
+            "data": {
+              "$ref": "#/components/schemas/UserVerificationResponse"
+            },
+            "message": {
+              "type": "string"
             }
+          }
+        },
+        "UserVerificationResponse": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "email": {
+              "type": "string"
+            },
+            "valid": {
+              "type": "boolean"
+            }
+          }
+        },
+        "UserCreateRequest": {
+          "required": [
+            "confirmPassword",
+            "email",
+            "password",
+            "username"
+          ],
+          "type": "object",
+          "properties": {
+            "username": {
+              "maxLength": 50,
+              "minLength": 3,
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "maxLength": 2147483647,
+              "minLength": 6,
+              "type": "string"
+            },
+            "confirmPassword": {
+              "type": "string"
+            }
+          }
+        },
+        "ApiResponseUserDto": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            },
+            "data": {
+              "$ref": "#/components/schemas/UserDto"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "LoginRequest": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "AuthResponse": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string"
+            }
+          }
         }
+      },
+      "securitySchemes": {
+        "bearer-jwt": {
+          "type": "http",
+          "description": "JWT Authorization header using the Bearer scheme.",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        },
+        "api-key": {
+          "type": "apiKey",
+          "description": "API Key Authentication for internal services",
+          "name": "X-API-KEY",
+          "in": "header"
+        }
+      }
     }
-}
+  }
