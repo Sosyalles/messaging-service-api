@@ -35,10 +35,8 @@ RUN mkdir -p logs
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3001
 
-# Expose port
-EXPOSE 3000
 
 # Start the application
 CMD ["npm", "run", "start:prod"] 
