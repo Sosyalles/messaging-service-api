@@ -1,53 +1,34 @@
-// Base API Response Type
-export interface ApiResponse<T> {
-  status: number;
-  message: string;
-  data: T;
-}
-
-// User Types
 export interface UserDto {
   id: number;
-  username: string;
   email: string;
-  profilePicture?: string;
-  bio?: string;
-  createdAt: string;
-  updatedAt: string;
-  followersCount: number;
-  followingCount: number;
+  username?: string;
 }
 
-export interface UserCreateRequest {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
+export interface AuthVerifyResponse {
+  data: {
+    id: number;
+    email: string;
+  };
 }
 
-// Service Response Types
-export interface InternalUserResponse extends ApiResponse<UserDto> {}
-export interface InternalUsersListResponse extends ApiResponse<UserDto[]> {}
-export interface AuthVerifyResponse extends ApiResponse<{ id: number; email: string }> {}
+export interface InternalUserResponse {
+  data: UserDto;
+}
 
-// Search Parameters
+export interface InternalUsersListResponse {
+  data: UserDto[];
+}
+
 export interface UserSearchParams {
   username?: string;
   email?: string;
 }
 
-// Error Types
-export interface ApiErrorResponse {
-  status: number;
+export interface UserServiceError {
   message: string;
-  error?: string;
+  code: string;
 }
 
-// Axios Error Types
-export interface UserServiceError {
-  response?: {
-    status: number;
-    data: ApiErrorResponse;
-  };
-  message: string;
+export interface ApiErrorResponse {
+  error: UserServiceError;
 } 
