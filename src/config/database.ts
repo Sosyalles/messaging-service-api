@@ -1,29 +1,18 @@
 import { Sequelize } from 'sequelize';
 import { env } from './env.config';
 
-// Connection pool configuration
-const poolConfig = {
-  max: parseInt(process.env.DB_POOL_MAX || '10', 10),
-  min: parseInt(process.env.DB_POOL_MIN || '0', 10),
-  acquire: parseInt(process.env.DB_POOL_ACQUIRE || '30000', 10),
-  idle: parseInt(process.env.DB_POOL_IDLE || '10000', 10)
-};
-
 export const sequelize = new Sequelize(env.DATABASE_URL, {
   dialect: 'postgres',
-  logging: process.env.NODE_ENV !== 'production',
-  pool: poolConfig,
-  define: {
-    timestamps: true,
-    underscored: true
-  },
-  dialectOptions: {
-    ssl: env.DB_SSL ? {
-      require: true,
-      rejectUnauthorized: false
-    } : false
+  logging: env.NODE_ENV === 'development' ? console.log : false,
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
   }
 });
+
+export default sequelize;
 
 // Connection management
 let isConnected = false;
