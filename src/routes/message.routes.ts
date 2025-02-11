@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 import { messageValidation } from '../validations';
 import { authMiddleware } from '../middlewares/auth';
+import { apiLimiter, messageLimiter } from '../middlewares/rateLimiter';
+import { validateRequestParams } from '../validations/common';
 import { 
   sendMessage,
   getConversation,
@@ -19,6 +21,9 @@ const router = Router();
  *   name: Messages
  *   description: Message management endpoints
  */
+
+// Apply rate limiting to all routes
+router.use(apiLimiter);
 
 /**
  * @openapi
@@ -58,7 +63,17 @@ const router = Router();
 router.post(
   '/send',
   authMiddleware,
+  messageLimiter, // Stricter rate limiting for message sending
   celebrate(messageValidation.sendMessage),
+  (req, res, next) => {
+    try {
+      // Validate and sanitize request parameters
+      req.body = validateRequestParams(req.body);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   sendMessage
 );
 
@@ -99,6 +114,14 @@ router.get(
   '/conversation/:receiverId',
   authMiddleware,
   celebrate(messageValidation.getConversation),
+  (req, res, next) => {
+    try {
+      req.params = validateRequestParams(req.params);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   getConversation
 );
 
@@ -176,6 +199,14 @@ router.delete(
   '/:messageId',
   authMiddleware,
   celebrate(messageValidation.deleteMessage),
+  (req, res, next) => {
+    try {
+      req.params = validateRequestParams(req.params);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   deleteMessage
 );
 
@@ -248,6 +279,14 @@ router.patch(
   '/:messageId/read',
   authMiddleware,
   celebrate(messageValidation.markMessageAsRead),
+  (req, res, next) => {
+    try {
+      req.params = validateRequestParams(req.params);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   markMessageAsRead
 );
 
