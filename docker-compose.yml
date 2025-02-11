@@ -8,11 +8,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=messaging_db
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/messaging_db
       - JWT_SECRET=your_jwt_secret_here
       - RABBITMQ_URL=amqp://rabbitmq:5672
     volumes:
