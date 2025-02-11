@@ -5,9 +5,11 @@ import helmet from 'helmet';
 import { Server } from 'socket.io';
 import { configureSocket } from './config/socket.config';
 import messageRoutes from './routes/message.routes';
+import healthRoutes from './routes/health.routes';
 import swaggerRoutes from './routes/swagger.routes';
 import { errorHandler } from './middlewares/error';
 import { authMiddleware } from './middlewares/auth';
+import { bodySizeLimit } from './middlewares/requestLimiter';
 import { rabbitMQService } from './services/RabbitMQService';
 import { env } from './config/env.config';
 
@@ -23,9 +25,11 @@ app.use(cors());
 app.use(helmet({
   contentSecurityPolicy: false  // This is needed for Swagger UI to work properly
 }));
+app.use(bodySizeLimit);
 app.use(express.json());
 
 // Routes
+app.use('/api/health', healthRoutes);
 app.use('/api-docs', swaggerRoutes);
 app.use('/api/messages', authMiddleware, messageRoutes);
 
